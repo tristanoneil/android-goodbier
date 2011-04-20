@@ -1,0 +1,51 @@
+<ScrollView android:id="@+id/new_beer"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout 
+        android:id="@+id/new_beer_form"
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+    <TextView
+        android:text="New Beer"
+        android:id="@+id/new_beer_heading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:layout_marginBottom="5px"
+        android:layout_marginTop="5px">
+        </TextView>
+
+    <EditText
+        android:id="@+id/beer"
+        android:hint="Beer"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        </EditText>
+
+    <EditText
+        android:id="@+id/style"
+        android:hint="Style"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        </EditText>
+
+    <EditText
+        android:id="@+id/price"
+        android:hint="Price"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        </EditText>
+
+    <Button
+        android:text="Create Beer"
+        android:id="@+id/create_beer"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:onClick="buildNewBeer">
+        </Button>
+    </LinearLayout>
+</ScrollView>
