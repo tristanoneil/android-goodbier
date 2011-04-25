@@ -61,6 +61,15 @@ public class RestClient {
         return false;
     }
 
+    public boolean logoutUser(Context context) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.remove(username);
+        editor.remove("password");
+        editor.commit();
+        return true;
+    }
+
     public void newSession(Context context) {
         HttpPost request = new HttpPost("http://@10.0.2.2:3000/login");
 
@@ -113,6 +122,60 @@ public class RestClient {
         params.add(new BasicNameValuePair("style", style));
         params.add(new BasicNameValuePair("price", price));
         params.add(new BasicNameValuePair("user", username));
+
+        try {
+            request.setEntity(new UrlEncodedFormEntity(params));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        ResponseHandler <String> handler = new BasicResponseHandler();
+
+        try {
+            httpclient.execute(request, handler);
+            return true;
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean editBeer(String id, String beer, String style, String price) {
+        HttpPost request = new HttpPost("http://@10.0.2.2:3000/beer/edit/" + id);
+
+        List<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>();
+
+        params.add(new BasicNameValuePair("beer", beer));
+        params.add(new BasicNameValuePair("style", style));
+        params.add(new BasicNameValuePair("price", price));
+
+        try {
+            request.setEntity(new UrlEncodedFormEntity(params));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        ResponseHandler <String> handler = new BasicResponseHandler();
+
+        try {
+            httpclient.execute(request, handler);
+            return true;
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean deleteBeer(String id, String revision) {
+        HttpPost request = new HttpPost("http://@10.0.2.2:3000/beer/delete/" + id);
+
+        List<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>();
+
+        params.add(new BasicNameValuePair("revision", revision));
 
         try {
             request.setEntity(new UrlEncodedFormEntity(params));

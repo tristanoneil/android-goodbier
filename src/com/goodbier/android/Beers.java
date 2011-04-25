@@ -14,10 +14,12 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class Beers extends ListActivity {
-	String[] beers;
+    RestClient client;
+    String[] beers;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -25,17 +27,19 @@ public class Beers extends ListActivity {
 
         beers = buildBeerList();
 
-        setListAdapter(new ArrayAdapter<String>(this, R.layout.list_item, beers));
-        ListView lv = getListView();
-        lv.setTextFilterEnabled(true);
+        if (beers != null) {
+            setListAdapter(new ArrayAdapter<String>(this, R.layout.list_item, beers));
+            ListView lv = getListView();
+            lv.setTextFilterEnabled(true);
 
-        lv.setOnItemClickListener(new OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent beer = new Intent(getApplicationContext(), com.goodbier.android.Beer.class);
-                beer.putExtra("id", position);
-                startActivity(beer);
-            }
-        });
+            lv.setOnItemClickListener(new OnItemClickListener() {
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Intent intent = new Intent(getApplicationContext(), com.goodbier.android.Beer.class);
+                    intent.putExtra("position", position);
+                    startActivity(intent);
+                }
+            });
+        }
     }
 
     public void onResume(Bundle savedInstanceState) {
@@ -43,20 +47,27 @@ public class Beers extends ListActivity {
     }
 
     public String[] buildBeerList() {
-        RestClient client = new RestClient(this);
+        client = new RestClient(this);
         client.newSession(this);
         JSONArray response = client.getBeers();
 
-        beers = new String[response.length()];
+        if (response != null) {
+            beers = new String[response.length()];
 
-        for (int i = 0; i < response.length(); i++) {
-            try {
-                beers[i] = response.getJSONObject(i).get("beer").toString();
-            } catch (JSONException e) {
-                e.printStackTrace();
+            for (int i = 0; i < response.length(); i++) {
+                try {
+                    beers[i] = response.getJSONObject(i).get("beer").toString();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
+            return beers;
         }
-        return beers;
+        else {
+            Toast toast = Toast.makeText(this, "An error occurred, cannot fetch beers.", 400);
+            toast.show();
+        }
+        return null;
     }
 
     @Override
@@ -72,8 +83,19 @@ public class Beers extends ListActivity {
             startActivity(new Intent(this, com.goodbier.android.NewBeer.class));
         }
         else if (item.getTitle().toString().equals("Logout")) {
-            // Logout
-            startActivity(new Intent(this, com.goodbier.android.Login.class));
+            boolean response = client.logoutUser(this);
+            client.httpclient.getConnectionManager().shutdown();
+
+            if (response) {
+                Toast toast = Toast.makeText(this, "Successfully logged out.", 400);
+                toast.show();
+
+                startActivity(new Intent(this, com.goodbier.android.Login.class));
+            }
+            else {
+                Toast toast = Toast.makeText(this, "An error occurred while logging out.", 400);
+                toast.show();
+            }
         }
         return true;
     }

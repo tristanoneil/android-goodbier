@@ -11,11 +11,11 @@ public class NewBeer extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.new_beer);
+        setContentView(R.layout.beer_form);
 
     }
 
-    public void buildNewBeer(View view) {
+    public void buildBeer(View view) {
         EditText beer_input = (EditText) findViewById(R.id.beer);
         String beer = beer_input.getText().toString();
 
@@ -30,6 +30,9 @@ public class NewBeer extends Activity {
         boolean response = client.createBeer(beer, style, price);
 
         if (response) {
+            Toast toast = Toast.makeText(this, "New beer created.", 400);
+            toast.show();
+
             startActivity(new Intent(this, com.goodbier.android.Beers.class));
         }
         else {

@@ -33,6 +33,9 @@ public class Login extends Activity {
             editor.putString("password", password);
             editor.commit();
 
+            Toast toast = Toast.makeText(this, "Successfully logged in.", 400);
+            toast.show();
+
             startActivity(new Intent(this, com.goodbier.android.Beers.class));
         }
         else {
