@@ -1,0 +1,4 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="Edit Beer" android:id="@+id/edit_beer"></item>
+    <item android:title="Delete Beer" android:id="@+id/delete_beer"></item>
+</menu>
